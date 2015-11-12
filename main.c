@@ -1,70 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "insertion_sort.h"
-
-void program_run();
-
-int main(void)
-{
-//    char list[n_str][str_size];
-//    char *addr[n_str];
-//    int i,n;
-//    for (i=0; i<n; i++) addr[i]=list[i];
-    char **ppstring, **ppstring_c;
-
-    ppstring = (char**)calloc(4, sizeof(char*));
-    ppstring_c = ppstring;
-
-    *ppstring++ = "Hallo, baby";
-    *ppstring++ = "Hallo, baby2";
-    *ppstring++ = "Hallo, baby3";
-    *ppstring = "Hallo, baby4";
-
-    printf("%s\n", *ppstring);
-    printf("%s\n", *ppstring_c);
-    printf("%s\n", "п");
-
-
-    program_run();
-    return 0;
-}
-
-
-
-void program_run()
-{
-    //char* errors;
-    int str_num = 20;
-    char strings[str_num][200];
-    char* addr_str[str_num];
-    int i = 0;
-    char *start;
-    char index[] = "\0";
-    //strings[0] = "Hello";
-    for(i = str_num; i > 0; i--)
-    {
-        start = "Hello, ";
-        snprintf(index, 3,"%d", i);
-//        errors = itoa(i, index, 10);
-        start = (char*)calloc((sizeof(*index) + sizeof(*start))/ sizeof(char), sizeof(char));
-        strcpy(start, "Hello, ");
-        strcat(start, index);
-        strcpy(strings[str_num - i], start);
-        addr_str[str_num - i] = strings[20 - i];
-    }
-    for(i = 0; i < str_num; i++)
-    {
-        printf("%s\n", addr_str[i]);
-    }
-    insertion_sorting(str_num, addr_str);
-    printf("\n");
-    for(i = 0; i < str_num; i++)
-    {
-        printf("%s\n", addr_str[i]);
-    }
-}
+// Copyright (C) 2015 Daniil Anichin <anichindaniil@gmail.com>
+// All rights reserved.
+//
+// Name:        main.c
+// Date:        2015.11.12
+// Author:      Daniil Anichin
 /*
 Програма повинна зчитати кількість елементів масиву рядків і сам масив та
 вивести на екран впорядкований масив рядків.
@@ -83,3 +22,53 @@ for (i=0; i<n; i++) addr[i]=list[i];
 Тут n – кількість елементів масиву рядків list . В даному випадку list[i] має значення
 адреси і -ого рядка (адреси першого елемента рядка).
 */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "insertion_sort.h"
+
+int main(void)
+{
+	const int str_count = 15;
+	int i_pos = 0;
+	int str_len = 0;
+	
+	// Temporary format string to fulfill array
+	const char* test_str = "Hello, my darling number %02d";
+
+	// main array of strings
+	char** strings = NULL;
+
+	// Allocate memory for main array
+	strings = (char**)calloc(str_count, sizeof(char*));
+
+	for(i_pos = 0; i_pos < str_count; ++i_pos)
+	{
+		str_len = strlen(test_str);
+		// Allocate memory for each string according to string size
+		strings[i_pos] = (char*)calloc(str_len, sizeof(char));
+		
+		sprintf_s(strings[i_pos], str_len, test_str, str_count - i_pos);
+	}
+
+	// Debug output
+	printf("Initial strings:\n");
+	for(i_pos = 0; i_pos < str_count; ++i_pos)
+		printf("%s\n", strings[i_pos]);
+
+	insertion_sorting(strings, str_count);
+
+	printf("Sorted strings:\n");
+	for(i_pos = 0; i_pos < str_count; ++i_pos)
+		printf("%s\n", strings[i_pos]);
+
+	// clear memory
+	for(i_pos = 0; i_pos < str_count; ++i_pos)
+		free(strings[i_pos]);
+
+	free(strings);
+
+	return 0;
+}
